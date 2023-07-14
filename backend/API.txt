@@ -1,0 +1,164 @@
+Auth
+
+- POST : register --> username/password (bcrypt)
+    * INPUT jSON : 
+    {
+        username: username,
+        email: email, 
+        password: password 
+    }
+    * OUTPUT JSON : 
+    {
+        message: user registered successfully,
+    }
+
+- POST : login --> JWT (sent to header)
+    * INPUT jSON : 
+    {
+        email: email,
+        password: password 
+    }
+    * OUTPUT JSON :
+    {
+        message: user logged in successfully,
+        token: JWTtoken
+    }
+
+Expense mgt
+
+- POST : Add Expense --> authenticate --> check limit (ref budget)
+    * INPUT jSON : 
+    {
+        date: date, 
+        description: description, 
+        category: grocery, 
+        amount: 200,
+        budegtid: budgetID (ref)
+    }
+    * OUTPUT JSON : 
+    {
+        message: expense added successfully
+    }
+
+- POST : View Expense --> authenticate --> sort/filter/paginate
+    * INPUT jSON : 
+    {
+        "sort":"true",
+        "sortingCriteria:{
+            criteria1: date,
+            criteria1: category,
+            criteria1: amount
+        }
+        "filter":"true",
+        "filterCriteria:{
+            criteria1: date-range,
+            criteria1: category,
+            criteria1: amount-range
+        }
+        paginate:{
+            value: true,
+            limit: 10/20/50,
+            pages: totalEntries % limit,
+            currentPage: pageNum
+        }
+    }
+
+    * OUTPUT JSON : 
+    {
+        payload : [
+            {
+                date: date, 
+                description: description, 
+                category: grocery, 
+                amount: 200,
+                budegtid: budgetID (ref)
+            },
+            {
+                date: date, 
+                description: description, 
+                category: grocery, 
+                amount: 200,
+                budegtid: budgetID (ref)
+            }
+        ]
+    }
+
+- POST : Update Expense --> authenticate --> update --> ref(budget) --> check limit
+    * INPUT jSON :
+    {
+        expenseid: expemseId, 
+        update: {
+                    date: date, 
+                    description: description, 
+                    category: grocery, 
+                    amount: 200,
+                    budegtid: budgetID (ref)
+                }
+    } 
+    * OUTPUT JSON : 
+    {
+       message: expense updated successfully
+    }
+
+- POST : Delete Expense --> authenticate --> Change type : inactive --> delete
+    * INPUT jSON : 
+    {
+        expenseid: expenseId
+    }
+
+    * OUTPUT JSON : 
+    {
+        message: expense deleted successfully
+    }
+
+Budget mgt
+
+- POST : Add Budget --> authenticate --> name, amount --> validate criteria
+    * INPUT jSON : 
+    {
+        name: name,
+        amount: amount
+    }
+    * OUTPUT JSON : 
+    {
+        message: budget added successfully
+    }
+
+- POST : View Budget --> authenticate --> name, allocated amount, total expenses, remaining amount --> display
+    * INPUT jSON : 
+    {
+        budgetid:mongoid
+    }
+    * OUTPUT JSON : 
+    {
+        name: name, 
+        allocated amount: amount, 
+        total expenses: expenses (ref), 
+        remaining amount: remaining
+    }
+    
+- POST : Update Budget --> authenticate --> validate criteria
+    * INPUT jSON : 
+    {
+        budgetid: budgetID, 
+        update: {
+                    name: name,
+                    amount: amount
+                }
+
+    }
+    * OUTPUT JSON : 
+    {
+        message: budget was updated successfully
+    }
+
+- POST : Delete Budget --> authenticate --> Change type : inactive --> delete
+    * INPUT jSON : 
+    {
+        budgetid: budgetIDId
+    }
+
+    * OUTPUT JSON : 
+    {
+        message: budget was deleted successfully
+    }
